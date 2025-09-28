@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz 2222</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: sans-serif; background: #f2f2f2; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh;}
+    .quiz-box { background: #fff; padding: 2rem; box-shadow: 0 4px 24px #0002; border-radius: 12px; width: 100%; max-width: 420px;}
+    .question { font-weight: bold; }
+    .choices { margin: 1rem 0; }
+    .choices button { margin: 0.25rem 0; width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ddd; background: #eee; cursor: pointer; }
+    .choices button.correct { background: #b2ffb2; }
+    .choices button.wrong { background: #ffcccc; }
+    .score { margin-top: 1.5rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="quiz-box" id="quiz"></div>
+<script>
+const questions = Array.from({length: 50}).map((_,i)=>{
+  let a=Math.floor(Math.random()*20),b=Math.floor(Math.random()*20);
+  let ans=a+b,choices=[ans,ans+1,ans+2,ans-1].sort(()=>Math.random()-.5);
+  return {q:`Q${i+1}: ${a} + ${b} = ?`,choices,answer:ans}
+});
+let idx=0,score=0;
+const quizDiv=document.getElementById("quiz");
+function showQuestion() {
+  if(idx>=questions.length) {
+    quizDiv.innerHTML = `<div class="score">✅ Finished! Your score: ${score} / ${questions.length}</div>`;
+    return;
+  }
+  let q=questions[idx];
+  quizDiv.innerHTML = `<div class="question">${q.q}</div>
+    <div class="choices">${
+      q.choices.map(c=>`<button>${c}</button>`).join("")
+    }</div>
+    <div class="score">Score: ${score}</div>`;
+  quizDiv.querySelectorAll("button").forEach(btn=>{
+    btn.onclick = ()=>{
+      if(parseInt(btn.textContent)===q.answer){
+        btn.classList.add("correct"); score++;
+      }else{btn.classList.add("wrong");}
+      setTimeout(()=>{idx++;showQuestion();},700);
+    };
+  });
+}
+showQuestion();
+</script>
+</body>
+</html>
